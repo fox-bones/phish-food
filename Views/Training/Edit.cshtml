@@ -1,0 +1,99 @@
+﻿@model PhishFood.Models.Training
+
+@{
+    ViewData["Title"] = "Edit Content";
+}
+
+@section style {
+    <style>
+        body {
+            background: url('/images/hawkowl.png') no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+    </style>
+}
+
+<h1 class="text-center mt-5">@ViewData["Title"] <i class="fa fa-file-text-o"></i></h1>
+
+<hr />
+<div class="row">
+    <div class="offset-lg-3 col-lg-6">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group create">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="Content" class="control-label"></label>
+                <div id="editor" style="font-size: 1rem; height: 20vh;">@Html.Raw(Model.Content)</div>
+                <input asp-for="Content" class="form-control" hidden />
+                <span asp-validation-for="Content" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="Notes" class="control-label"></label>
+                <div id="editor2" style="font-size: 1rem; height: 20vh;">@Html.Raw(Model.Notes)</div>
+                <input asp-for="Notes" class="form-control" hidden />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="CategoryID" class="control-label"></label>
+                <select asp-for="CategoryID" class="form-control" asp-items="ViewBag.CategoryID"></select>
+                <span asp-validation-for="CategoryID" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="SubcategoryID" class="control-label"></label>
+                <select asp-for="SubcategoryID" class="form-control" asp-items="ViewBag.SubcategoryID"></select>
+                <span asp-validation-for="SubcategoryID" class="text-danger"></span>
+            </div>
+            <div class="form-group btns mb-5">
+                <input type="submit" value="Save" class="btn btn-outline-danger" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section script {
+    <script>
+        // Initialize Quill editor
+        const toolbarOptions = [
+            [{font: []}, {size: []}],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{color: []}, {background: []}],
+            [{script: 'sub'}, {script: 'super'}],
+            [{header: []}, 'blockquote'],
+            [{list: 'ordered'}, {list: 'bullet'}, {indent: '-1'}, {indent: '+1'}],
+            [{align: []}],
+            ['link', 'image', 'video'],
+            ['clean']
+        ];
+
+        let quill = new Quill('#editor', {
+            modules: { toolbar: toolbarOptions },
+            theme: 'snow',
+        });
+
+        let quill2 = new Quill('#editor2', {
+            modules: { toolbar: toolbarOptions },
+            theme: 'snow',
+        });
+
+        $(function(){
+            // Set the value of the content field with Quill when submitting
+            $("form").submit(function(){
+                $("#Content").val(quill.root.innerHTML);
+                $("#Notes").val(quill2.root.innerHTML);
+            });
+        });
+    </script>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

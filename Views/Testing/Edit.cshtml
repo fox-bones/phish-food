@@ -1,0 +1,122 @@
+﻿@model PhishFood.Models.Testing
+
+@{
+    ViewData["Title"] = "Edit Question";
+}
+
+@section style {
+    <style>
+        body {
+            background: url('/images/hawkowl.png') no-repeat;
+            background-size: contain;
+            background-position: center;
+        }
+    </style>
+}
+
+<h1 class="text-center mt-5">@ViewData["Title"] <i class="fa fa-file-text-o"></i></h1>
+
+<hr />
+<div class="row">
+    <div class="offset-lg-3 col-lg-6">
+        <form asp-action="Edit" method="post" class="form-collection">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="ID" />
+            <div class="form-group create">
+                <label asp-for="Question" class="control-label"></label>
+                <div id="editor" class="quill-editor"></div>
+                <input asp-for="Question" class="form-control" hidden />
+                <span asp-validation-for="Question" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="Key" class="control-label"></label>
+                <input asp-for="Key" class="form-control" />
+                <span asp-validation-for="Key" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="Option1" class="control-label"></label>
+                <input asp-for="Option1" class="form-control" />
+                <span asp-validation-for="Option1" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="Option2" class="control-label"></label>
+                <input asp-for="Option2" class="form-control" />
+                <span asp-validation-for="Option2" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="Option3" class="control-label"></label>
+                <input asp-for="Option3" class="form-control" />
+                <span asp-validation-for="Option3" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="Explanation" class="control-label"></label>
+                <div id="editor2" class="quill-editor"></div>
+                <input asp-for="Explanation" class="form-control" hidden />
+                <span asp-validation-for="Explanation" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="CategoryID" class="control-label"></label>
+                <select asp-for="CategoryID" class="form-control" asp-items="ViewBag.CategoryID"></select>
+                <span asp-validation-for="CategoryID" class="text-danger"></span>
+            </div>
+            <div class="form-group create">
+                <label asp-for="SubcategoryID" class="control-label"></label>
+                <select asp-for="SubcategoryID" class="form-control" asp-items="ViewBag.SubcategoryID"></select>
+                <span asp-validation-for="SubcategoryID" class="text-danger"></span>
+            </div>
+            <div class="form-group btns mb-5">
+                <input type="submit" value="Save" class="btn btn-outline-danger" />
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section script {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Quill
+            const toolbarOptions = [
+                ['bold', 'italic', 'underline', 'strike'],
+                ['blockquote'],
+                ['link', 'image', 'video'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                [{ 'indent': '-1' }, { 'indent': '+1' }],
+                [{ 'size': ['small', false, 'large', 'huge'] }],
+                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'font': [] }],
+                [{ 'align': [] }],
+                ['clean']
+            ];
+
+            let quill = new Quill('#editor', {
+                modules: { toolbar: toolbarOptions },
+                theme: 'snow'
+            });
+            let quill2 = new Quill('#editor2', {
+                modules: { toolbar: toolbarOptions },
+                theme: 'snow'
+            });
+
+            // Populate the Quill editor with the existing content (raw HTML from the model)
+            var existingQuestionContent = '@Html.Raw(Model.Question)';
+            var existingExplanationContent = '@Html.Raw(Model.Explanation)';
+            quill.root.innerHTML = existingQuestionContent;
+            quill2.root.innerHTML = existingExplanationContent;
+
+            // When the form is submitted, update the hidden input field with Quill content
+            $('form').submit(function () {
+                // Get the HTML content from Quill and place it into the hidden field
+                $('#Question').val(quill.root.innerHTML);
+                $('#Explanation').val(quill2.root.innerHTML);
+            });
+        });
+    </script>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
