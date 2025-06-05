@@ -1,0 +1,114 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<style>
+    body {
+        background: linear-gradient(to bottom right, #e8f5e9, #008365);
+        min-height: 100vh;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .forest-card {
+        background-color: #ffffff;
+        border: 2px solid #388e3c;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(56, 142, 60, 0.3);
+    }
+
+    .forest-btn {
+        background-color: #008365;
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: background-color 0.3s ease;
+    }
+
+    .forest-btn:hover {
+        color: white;
+        background-color: #008365;
+        transform: translateY(-3%) scale(1.01);
+        box-shadow: 0 4px 8px rgba(0, 131, 101, 0.5);
+    }
+    .forest-btn:active {
+        transform: translateY(-3%) scale(0.99);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .forest-heading {
+        color: #008365;
+        font-weight: bold;
+    }
+
+    .forest-link {
+        color: #1b5e20;
+        text-decoration: underline;
+    }
+
+        .forest-link:hover {
+            color: #2e7d32;
+        }
+</style>
+
+<h1 class="text-center forest-heading mt-4">@ViewData["Title"]</h1>
+
+<div class="d-flex justify-content-center align-items-center mt-4" style="min-height: 75vh;">
+    <div class="card forest-card p-4 w-100" style="max-width: 450px;">
+        <section class="mt-4">
+            <h4 class="text-center forest-heading">Login with Google</h4>
+            <hr />
+            @if ((Model.ExternalLogins?.Count ?? 0) == 0)
+            {
+                <div class="text-center">
+                    <p>
+                        No external providers configured. See
+                        <a class="forest-link" href="https://go.microsoft.com/fwlink/?LinkID=532715" target="_blank">
+                            this article
+                        </a>.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="d-grid gap-3">
+                    @foreach (var provider in Model.ExternalLogins!)
+                    {
+                        <button type="submit" class="btn forest-btn btn-lg rounded-pill" name="provider" value="@provider.Name"
+                                title="Log in using your @provider.DisplayName account">
+                            Log in with @provider.DisplayName
+                        </button>
+                    }
+                </form>
+            }
+        </section>
+        <hr />
+        <section>
+            <form id="account" method="post">
+                <h3 class="text-center forest-heading mb-3">Administrative Login</h3>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger center" role="alert"></div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <label asp-for="Input.Email">Email or Username</label>
+                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                    <label asp-for="Input.Password">Password</label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+
+                <button id="login-submit" type="submit" class="w-100 btn forest-btn btn-lg rounded-pill">Log in</button>
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
